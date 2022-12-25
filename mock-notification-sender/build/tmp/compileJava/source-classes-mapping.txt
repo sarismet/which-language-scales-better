@@ -8,7 +8,5 @@ com/iso/isoscale/model/SendNotificationRequest.java
  com.iso.isoscale.model.SendNotificationRequest
 com/iso/isoscale/controller/NotificationController.java
  com.iso.isoscale.controller.NotificationController
-com/iso/isoscale/config/RestTemplateConfig.java
- com.iso.isoscale.config.RestTemplateConfig
 com/iso/isoscale/IsoScaleApplication.java
  com.iso.isoscale.IsoScaleApplication
