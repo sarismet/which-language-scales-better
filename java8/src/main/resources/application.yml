@@ -1,0 +1,6 @@
+server:
+  port : 8081
+
+async:
+  core-pool-size: 200
+
