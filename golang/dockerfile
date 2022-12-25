@@ -1,0 +1,17 @@
+FROM golang:latest
+
+ENV GO111MODULE=auto
+
+EXPOSE 8003
+
+RUN mkdir -p /go/src/github.com/sarismet
+
+WORKDIR /go/src/github.com/sarismet
+
+COPY . /go/src/github.com/sarismet
+
+RUN chmod a+x /go/src/github.com/sarismet
+
+RUN go get github.com/labstack/echo
+
+CMD ["go","run","/go/src/github.com/sarismet/main.go"]

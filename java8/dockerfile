@@ -1,0 +1,9 @@
+FROM openjdk:8-jre-slim
+
+EXPOSE 8084
+
+RUN mkdir /app
+
+COPY build/libs/*.jar /app/java8-service.jar
+
+ENTRYPOINT ["java", "-jar", "/app/java8-service.jar"]
