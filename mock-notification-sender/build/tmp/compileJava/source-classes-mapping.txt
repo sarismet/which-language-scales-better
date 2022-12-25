@@ -4,8 +4,8 @@ com/iso/isoscale/config/AsyncConfig.java
  com.iso.isoscale.config.AsyncConfig
 com/iso/isoscale/config/AsyncProperties.java
  com.iso.isoscale.config.AsyncProperties
-com/iso/isoscale/model/NotificationResponse.java
- com.iso.isoscale.model.NotificationResponse
+com/iso/isoscale/model/SendNotificationRequest.java
+ com.iso.isoscale.model.SendNotificationRequest
 com/iso/isoscale/controller/NotificationController.java
  com.iso.isoscale.controller.NotificationController
 com/iso/isoscale/config/RestTemplateConfig.java

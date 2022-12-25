@@ -1,6 +1,9 @@
 server:
-  port : 8081
+  port : 8084
 
 async:
-  core-pool-size: 200
+  core-pool-size: 500
 
+logging:
+  level:
+    com.iso.isoscale: INFO
