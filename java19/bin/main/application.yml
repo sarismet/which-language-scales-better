@@ -1,9 +1,10 @@
 server:
-  port : 8081
+  port : 8082
 
 async:
   core-pool-size: 200
 
 logging:
   level:
-    com.iso.isoscale: TRACE
+    isoscale: TRACE
+

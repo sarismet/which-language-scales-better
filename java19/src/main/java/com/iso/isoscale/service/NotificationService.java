@@ -2,11 +2,12 @@ package com.iso.isoscale.service;
 
 import com.iso.isoscale.model.NotificationResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @Service
@@ -14,19 +15,19 @@ public class NotificationService {
 
     private final RestTemplate restTemplate;
 
-    private final TaskExecutor taskExecutor;
 
-    public NotificationService(final RestTemplate restTemplate, final TaskExecutor taskExecutor) {
+    public NotificationService(final RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.taskExecutor = taskExecutor;
     }
 
     public CompletableFuture<NotificationResponse> sendNotification(final String deviceId) {
+        final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
         return CompletableFuture.supplyAsync(() -> {
             log.trace("Sending push to device: {}", deviceId);
+
             return new NotificationResponse();
-        }, taskExecutor);
+        }, executor);
 
     }
 

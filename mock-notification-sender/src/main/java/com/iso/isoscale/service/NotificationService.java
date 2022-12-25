@@ -3,6 +3,7 @@ package com.iso.isoscale.service;
 import com.iso.isoscale.model.NotificationResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,7 +25,7 @@ public class NotificationService {
     public CompletableFuture<NotificationResponse> sendNotification(final String deviceId) {
 
         return CompletableFuture.supplyAsync(() -> {
-            log.trace("Sending push to device: {}", deviceId);
+            log.trace("Sending push");
             return new NotificationResponse();
         }, taskExecutor);
 

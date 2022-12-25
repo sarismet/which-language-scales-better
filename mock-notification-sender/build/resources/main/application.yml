@@ -4,6 +4,3 @@ server:
 async:
   core-pool-size: 200
 
-logging:
-  level:
-    com.iso.isoscale: TRACE
