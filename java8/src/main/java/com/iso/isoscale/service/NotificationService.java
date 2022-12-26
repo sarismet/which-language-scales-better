@@ -32,6 +32,12 @@ public class NotificationService {
         return CompletableFuture.supplyAsync(() -> {
             log.trace("Sending push to device with id: {}", sendNotificationRequest.getDeviceId());
 
+            try {
+                Thread.sleep(100);
+            } catch (final InterruptedException ex) {
+                log.error("Error occurred while sleeping in thread");
+            }
+
             final HttpEntity<SendNotificationRequest> request = new HttpEntity<>(sendNotificationRequest);
             final ResponseEntity<Boolean> response =
                     restTemplate.postForEntity(SEND_NOTIFICATION_URL, request, Boolean.class);

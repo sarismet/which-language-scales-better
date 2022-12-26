@@ -1,9 +1,0 @@
-FROM openjdk:19-oracle
-
-EXPOSE 8084
-
-RUN mkdir /app
-
-COPY build/libs/*.jar /app/java19-service.jar
-
-ENTRYPOINT ["java", "-jar", "/app/java19-service.jar"]

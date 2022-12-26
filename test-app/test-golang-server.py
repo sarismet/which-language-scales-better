@@ -5,7 +5,7 @@ from utils import send_notification_to_server
 
 def test_golang_notification_to_server():
     start = time.time()
-    send_notification_to_server("Golang", "http://localhost:8083/send/", 15000)
+    send_notification_to_server("Golang", "http://localhost:8083/send/", 1000)
     end = time.time()
 
     print(

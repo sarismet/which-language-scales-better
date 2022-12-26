@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"time"
-
 	"github.com/labstack/echo"
 )
 
@@ -21,7 +20,7 @@ func main() {
 	echo_server := echo.New()
 
 	echo_server.POST("/send/", send_notification)
-	echo_server.Start(":8003")
+	echo_server.Start(":8083")
 
 }
 
@@ -39,15 +38,13 @@ func send_notification(c echo.Context) error {
 		values := map[string]string{"deviceId": send_notification_request.Device_id}
 		json_data, err := json.Marshal(values)
 
+		time.Sleep(100 * time.Millisecond)
+
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		httpClient := http.Client{
-			Timeout: time.Duration(1 * time.Second),
-		}
-
-		_, err = httpClient.Post(send_notification_url, "application/json", bytes.NewBuffer(json_data))
+		_, err = http.Post(send_notification_url, "application/json", bytes.NewBuffer(json_data))
 
 		if err != nil {
 			log.Printf("Push notification service is unavailable")

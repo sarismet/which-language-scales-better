@@ -23,7 +23,7 @@ public class NotificationService {
 
         return CompletableFuture.supplyAsync(() -> {
             try {
-                Thread.sleep(500);
+                Thread.sleep(100);
             } catch (final InterruptedException ex) {
                 log.error("Error occurred while sleeping in thread");
             }
