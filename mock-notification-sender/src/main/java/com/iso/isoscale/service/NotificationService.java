@@ -19,14 +19,18 @@ public class NotificationService {
         this.taskExecutor = taskExecutor;
     }
 
-    public CompletableFuture<Boolean> sendNotification(@NotNull  final String deviceId) {
+    public boolean sendNotification(@NotNull  final String deviceId) {
 
-        return CompletableFuture.supplyAsync(() -> {
+
+        try {
+            Thread.sleep(500);
+        } catch (final InterruptedException ex) {
+            log.error("Error occurred while sleeping in thread");
+        }
 
             log.trace("Sending push to device with id: {}", deviceId);
 
             return true;
-        }, taskExecutor);
 
     }
 
