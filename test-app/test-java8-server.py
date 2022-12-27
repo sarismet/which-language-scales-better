@@ -5,7 +5,7 @@ from utils import send_notification_to_server
 
 def test_java8_notification_to_server():
     start = time.time()
-    send_notification_to_server("Java 8", "http://localhost:8081/send/", 1000)
+    send_notification_to_server("Java 8", "http://localhost:8081/send/", 500)
     end = time.time()
 
     print(

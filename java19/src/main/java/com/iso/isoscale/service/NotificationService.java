@@ -34,7 +34,7 @@ public class NotificationService {
             log.trace("Sending push to device with id: {}", sendNotificationRequest.getDeviceId());
 
             try {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (final InterruptedException ex) {
                 log.error("Error occurred while sleeping in thread");
             }
