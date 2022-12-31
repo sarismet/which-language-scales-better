@@ -3,9 +3,12 @@ import time
 from utils import send_notification_to_server
 
 
-URL_V1 = "http://localhost:7002/send/"
-URL_V2 = "http://localhost:7002/send/v2/"
-URL_V3 = "http://localhost:7002/send/v3/"
+HOST = "http://localhost"
+PORT = "7002"
+
+URL_V1 = HOST + ":" + PORT + "/send/"
+URL_V2 = HOST + ":" + PORT + "/send/v2/"
+URL_V3 = HOST + ":" + PORT + "/send/v3/"
 
 def test_golang_notification_to_server():
     send_notification_to_server("Java 19", URL_V1, 500)
