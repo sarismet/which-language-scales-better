@@ -1,16 +1,15 @@
-package com.iso.isoscale.service;
+package com.iso.scale.service;
 
-import com.iso.isoscale.model.NotificationResponse;
-import com.iso.isoscale.model.SendNotificationRequest;
+import java.util.concurrent.CompletableFuture;
+
+import com.iso.scale.model.NotificationResponse;
+import com.iso.scale.model.SendNotificationRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Slf4j
 @Service
@@ -20,18 +19,17 @@ public class NotificationService {
 
     private final RestTemplate restTemplate;
 
+    private final TaskExecutor taskExecutor;
 
-    public NotificationService(final RestTemplate restTemplate) {
+    public NotificationService(final RestTemplate restTemplate, final TaskExecutor taskExecutor) {
         this.restTemplate = restTemplate;
+        this.taskExecutor = taskExecutor;
     }
 
     public CompletableFuture<NotificationResponse> sendAsyncNotification(
         final SendNotificationRequest sendNotificationRequest) {
 
-        final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
-
-        return CompletableFuture.supplyAsync(() -> sendSyncNotification(sendNotificationRequest), executor);
-
+        return CompletableFuture.supplyAsync(() -> sendSyncNotification(sendNotificationRequest), taskExecutor);
     }
 
     public NotificationResponse sendSyncNotification(final SendNotificationRequest sendNotificationRequest) {

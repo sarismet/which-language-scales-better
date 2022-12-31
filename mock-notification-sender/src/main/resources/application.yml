@@ -1,8 +1,6 @@
 server:
-  port : 8084
-
-async:
-  core-pool-size: 500
+  port : 7004
+  sleepTime: 500
 
 logging:
   level:

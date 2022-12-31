@@ -3,16 +3,14 @@ import time
 from utils import send_notification_to_server
 
 
-def test_golang_notification_to_server():
-    start = time.time()
-    send_notification_to_server("Golang", "http://localhost:8083/send/", 1000)
-    end = time.time()
+URL_V1 = "http://localhost:7002/send/"
+URL_V2 = "http://localhost:7002/send/v2/"
+URL_V3 = "http://localhost:7002/send/v3/"
 
-    print(
-        "Total execution time for server name: {} is : {}".format(
-            "Golang", (end - start)
-        )
-    )
+def test_golang_notification_to_server():
+    send_notification_to_server("Java 19", URL_V1, 500)
+    send_notification_to_server("Java 19", URL_V2, 500)
+    send_notification_to_server("Java 19", URL_V3, 500)
 
 
 if __name__ == "__main__":

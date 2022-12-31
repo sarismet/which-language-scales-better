@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.iso'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '19'
+sourceCompatibility = 19
 
 repositories {
 	mavenCentral()
@@ -26,8 +26,4 @@ dependencies {
 
 	compileOnly 'org.projectlombok:lombok:1.18.24'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
 }

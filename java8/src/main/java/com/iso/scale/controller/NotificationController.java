@@ -1,11 +1,13 @@
-package com.iso.isoscale.controller;
+package com.iso.scale.controller;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-import com.iso.isoscale.model.NotificationResponse;
-import com.iso.isoscale.model.SendNotificationRequest;
-import com.iso.isoscale.service.NotificationService;
+import javax.validation.Valid;
+
+import com.iso.scale.model.NotificationResponse;
+import com.iso.scale.model.SendNotificationRequest;
+import com.iso.scale.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,14 +29,15 @@ public class NotificationController {
     }
 
     @PostMapping("/send/")
-    public NotificationResponse sendNotification(@RequestBody final SendNotificationRequest sendNotificationRequest) {
+    public NotificationResponse sendNotification(
+        @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         return this.notificationService.sendAsyncNotification(sendNotificationRequest).join();
     }
 
     @PostMapping("/send/v2/")
     public DeferredResult<NotificationResponse> sendNotificationV2(
-        @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
         final DeferredResult<NotificationResponse> result = new DeferredResult<>();
 
         CompletableFuture
@@ -55,7 +58,7 @@ public class NotificationController {
 
     @PostMapping("/send/v3/")
     public DeferredResult<NotificationResponse> sendNotificationV3(
-        @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         final DeferredResult<NotificationResponse> deferredResult = new DeferredResult<>();
 

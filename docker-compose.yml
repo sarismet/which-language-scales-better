@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  java8-notification-server:
+    build: ./java8
+    ports:
+      - 7000:7000
+    depends_on:
+      - mock-notification-sender
+    networks:
+      - notification_bridge
+
+  java19-notification-server:
+    build: ./java19
+    ports:
+      - 7001:7001
+    depends_on:
+      - mock-notification-sender
+    networks:
+      - notification_bridge
+
+  mock-notification-sender:
+    build: ./mock-notification-sender
+    ports:
+      - 7004:7004
+    environment:
+      server.sleepTime: 500
+    networks:
+      - notification_bridge
+
+networks:
+  notification_bridge:
+    driver: bridge
