@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotificationService {
 
-    @Value("server.sleepTime")
+    @Value("${server.sleepTime}")
     private int sleepTime;
 
     public boolean sendNotification(@NotNull final String deviceId) {
