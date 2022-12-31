@@ -6,7 +6,7 @@ RUN mvn -f /home/app/pom.xml clean package
 
 FROM openjdk:8u312-jre-slim
 COPY --from=build /home/app/target/*.jar /usr/local/lib/
-COPY --from=build /usr/local/lib/*.jar/ /usr/local/lib/scale-java8.jar/
+RUN mv /usr/local/lib/*.jar/ /usr/local/lib/scale-java8.jar/
 
 EXPOSE 7000
 ENTRYPOINT ["java","-jar","/usr/local/lib/scale-java8.jar"]
