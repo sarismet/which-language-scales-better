@@ -2,12 +2,13 @@ package com.iso.isoscale.controller;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.iso.isoscale.model.NotificationResponse;
 import com.iso.isoscale.model.SendNotificationRequest;
 import com.iso.isoscale.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,11 +20,8 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    private final TaskExecutor taskExecutor;
-
-    public NotificationController(final NotificationService notificationService, final TaskExecutor taskExecutor) {
+    public NotificationController(final NotificationService notificationService) {
         this.notificationService = notificationService;
-        this.taskExecutor = taskExecutor;
     }
 
     @PostMapping("/send/")
@@ -37,13 +35,15 @@ public class NotificationController {
         @RequestBody final SendNotificationRequest sendNotificationRequest) {
         final DeferredResult<NotificationResponse> result = new DeferredResult<>();
 
+        final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+
         CompletableFuture
             .runAsync(() -> {
                 final NotificationResponse notificationResponse =
                     this.notificationService.sendSyncNotification(sendNotificationRequest);
 
                 result.setResult(notificationResponse);
-            }, taskExecutor)
+            }, executor)
             .exceptionally(ex -> {
                 result.setErrorResult(ex.getCause());
 
