@@ -1,0 +1,7 @@
+server:
+  port : 7004
+  sleepTime: 500
+
+logging:
+  level:
+    com.iso.isoscale: INFO
