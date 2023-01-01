@@ -1,8 +1,19 @@
 import requests
 import concurrent.futures
 import time
+import json
 
 errors = list()
+
+def log_error(server_url: str, notification_count: int) -> None:
+    print(
+        "Error occurred for server url : {} at notification count: ".format(
+            server_url
+        ),
+        notification_count,
+    )
+
+    errors.append(notification_count)
 
 def send_notification_to_related_server(
     server_url: str, notification_count: int
@@ -16,28 +27,27 @@ def send_notification_to_related_server(
             json={"deviceId": "a7a753cb-1092-45c1-a54a-c594e6f3e558"},
             timeout=1,
         )
-        if response.status_code != 200:
-            errors.append(notification_count)
-            print(
-                "Error occurred for server url : {} at notification count: ".format(
-                    server_url
-                ),
-                notification_count,
-            )
+        if response.status_code == 200:
+            json_payload = json.loads(response.text)
+            if json_payload["success"] != True:
+                log_error(server_url, notification_count)
+        elif response.status_code != 200:
+            log_error(server_url, notification_count)
     except Exception as ex:
-        errors.append(notification_count)
         print(
             "Error occurred for server url : {} at notification count: ".format(
                 server_url
             ),
             notification_count,
-            ex,
+            ex
         )
+
+        errors.append(notification_count)
 
 
 def send_notification_to_server(
     server_name: str, server_url: str, total_notification_count: int
-):
+) -> None: 
 
     print(
         "Sending {} notification to server: {} with url: {}".format(
@@ -47,7 +57,7 @@ def send_notification_to_server(
 
     start_process = time.time()
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=34) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         start_submit = time.time()
         for notification_count in range(total_notification_count):
             executor.submit(
@@ -62,13 +72,7 @@ def send_notification_to_server(
         )
 
     end_process = time.time()
-
-    print(
-        "{} server successfuly handled {} notification request".format(
-            server_name, total_notification_count
-        )
-    )
-
+ 
     global errors
     
     print(

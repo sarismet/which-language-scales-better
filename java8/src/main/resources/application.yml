@@ -1,6 +1,7 @@
 server:
   port : 7000
+  sleepTime: 500
 
 logging:
   level:
-    com.iso.isoscale: INFO
+    com.iso.scale: INFO

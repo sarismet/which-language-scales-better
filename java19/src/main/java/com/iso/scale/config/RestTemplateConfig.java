@@ -1,4 +1,4 @@
-package com.iso.isoscale.config;
+package com.iso.scale.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

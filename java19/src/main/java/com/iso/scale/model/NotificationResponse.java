@@ -1,4 +1,4 @@
-package com.iso.isoscale.model;
+package com.iso.scale.model;
 
 import lombok.Data;
 

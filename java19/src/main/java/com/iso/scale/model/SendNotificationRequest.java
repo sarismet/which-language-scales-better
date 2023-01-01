@@ -1,4 +1,4 @@
-package com.iso.isoscale.model;
+package com.iso.scale.model;
 
 import jakarta.annotation.Nonnull;
 import lombok.Data;

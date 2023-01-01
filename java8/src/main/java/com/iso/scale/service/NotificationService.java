@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import com.iso.scale.model.NotificationResponse;
 import com.iso.scale.model.SendNotificationRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,9 @@ public class NotificationService {
 
     private final TaskExecutor taskExecutor;
 
+    @Value("${server.sleepTime}")
+    private long sleepTime;
+
     public NotificationService(final RestTemplate restTemplate, final TaskExecutor taskExecutor) {
         this.restTemplate = restTemplate;
         this.taskExecutor = taskExecutor;
@@ -33,6 +37,14 @@ public class NotificationService {
     }
 
     public NotificationResponse sendSyncNotification(final SendNotificationRequest sendNotificationRequest) {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+
+            log.error("Error occurred while sleeping in thread");
+        }
+
         log.trace("Sending push to device with id: {}", sendNotificationRequest.getDeviceId());
 
         final HttpEntity<SendNotificationRequest> request = new HttpEntity<>(sendNotificationRequest);

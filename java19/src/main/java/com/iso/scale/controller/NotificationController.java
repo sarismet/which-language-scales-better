@@ -1,13 +1,13 @@
-package com.iso.isoscale.controller;
+package com.iso.scale.controller;
 
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.iso.isoscale.model.NotificationResponse;
-import com.iso.isoscale.model.SendNotificationRequest;
-import com.iso.isoscale.service.NotificationService;
+import com.iso.scale.model.NotificationResponse;
+import com.iso.scale.model.SendNotificationRequest;
+import com.iso.scale.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

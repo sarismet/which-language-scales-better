@@ -1,4 +1,4 @@
-package com.iso.isoscale;
+package com.iso.scale;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

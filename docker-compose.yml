@@ -6,6 +6,8 @@ services:
       - 7000:7000
     depends_on:
       - mock-notification-sender
+    environment:
+      server.sleepTime: 100
     networks:
       - notification_bridge
 
@@ -15,6 +17,19 @@ services:
       - 7001:7001
     depends_on:
       - mock-notification-sender
+    environment:
+      server.sleepTime: 100
+    networks:
+      - notification_bridge
+
+  golang-notification-server:
+    build: ./golang
+    ports:
+      - 7002:7002
+    depends_on:
+      - mock-notification-sender
+    environment:
+      server.sleepTime: 100
     networks:
       - notification_bridge
 
@@ -22,8 +37,6 @@ services:
     build: ./mock-notification-sender
     ports:
       - 7004:7004
-    environment:
-      server.sleepTime: 500
     networks:
       - notification_bridge
 
