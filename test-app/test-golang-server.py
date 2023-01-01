@@ -10,7 +10,7 @@ URL = HOST + ":" + PORT + "/send/"
 
 
 def test_golang_notification_to_server():
-    send_notification_to_server("Golang", URL, 1000)
+    send_notification_to_server("Golang", URL, 5000)
 
 
 if __name__ == "__main__":

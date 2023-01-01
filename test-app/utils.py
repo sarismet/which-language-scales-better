@@ -57,7 +57,7 @@ def send_notification_to_server(
 
     start_process = time.time()
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1000) as executor:
         start_submit = time.time()
         for notification_count in range(total_notification_count):
             executor.submit(

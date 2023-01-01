@@ -5,7 +5,7 @@ services:
     ports:
       - 7000:7000
     depends_on:
-      - mock-notification-sender
+      - mock-java8-notification-sender
     environment:
       server.sleepTime: 300
     networks:
@@ -16,7 +16,7 @@ services:
     ports:
       - 7001:7001
     depends_on:
-      - mock-notification-sender
+      - mock-java8-notification-sender
     environment:
       server.sleepTime: 300
     networks:
@@ -27,7 +27,8 @@ services:
     ports:
       - 7002:7002
     depends_on:
-      - mock-notification-sender
+      - mock-java8-notification-sender
+      - mock-golang-notification-sender
     environment:
       server.sleepTime: 300
     networks:
@@ -38,16 +39,24 @@ services:
     ports:
       - 7003:7003
     depends_on:
-      - mock-notification-sender
+      - mock-java8-notification-sender
+      - mock-golang-notification-sender
     environment:
       server.sleepTime: 300
     networks:
       - notification_bridge
 
-  mock-notification-sender:
-    build: ./mock-notification-sender
+  mock-java8-notification-sender:
+    build: ./mock-java8-notification-sender
     ports:
       - 7004:7004
+    networks:
+      - notification_bridge
+
+  mock-golang-notification-sender:
+    build: ./mock-golang-notification-sender
+    ports:
+      - 7005:7005
     networks:
       - notification_bridge
 

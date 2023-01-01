@@ -11,11 +11,11 @@ URL_V3 = HOST + ":" + PORT + "/send/v3/"
 
 
 def test_java19_notification_to_server():
-    send_notification_to_server("Java 19", URL_V1, 1000)
+    send_notification_to_server("Java 19", URL_V1, 5000)
     time.sleep(15)
-    send_notification_to_server("Java 19", URL_V2, 1000)
+    send_notification_to_server("Java 19", URL_V2, 5000)
     time.sleep(15)
-    send_notification_to_server("Java 19", URL_V3, 1000)
+    send_notification_to_server("Java 19", URL_V3, 5000)
 
 
 if __name__ == "__main__":

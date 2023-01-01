@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class NotificationService {
 
-    private static final String SEND_NOTIFICATION_URL = "http://mock-notification-sender:7004/send/";
+    private static final String SEND_NOTIFICATION_URL = "http://mock-java8-notification-sender:7004/send/";
 
     private final RestTemplate restTemplate;
 
