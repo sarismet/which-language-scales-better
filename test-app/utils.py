@@ -5,15 +5,15 @@ import json
 
 errors = list()
 
+
 def log_error(server_url: str, notification_count: int) -> None:
     print(
-        "Error occurred for server url : {} at notification count: ".format(
-            server_url
-        ),
+        "Error occurred for server url : {} at notification count: ".format(server_url),
         notification_count,
     )
 
     errors.append(notification_count)
+
 
 def send_notification_to_related_server(
     server_url: str, notification_count: int
@@ -39,7 +39,7 @@ def send_notification_to_related_server(
                 server_url
             ),
             notification_count,
-            ex
+            ex,
         )
 
         errors.append(notification_count)
@@ -47,7 +47,7 @@ def send_notification_to_related_server(
 
 def send_notification_to_server(
     server_name: str, server_url: str, total_notification_count: int
-) -> None: 
+) -> None:
 
     print(
         "Sending {} notification to server: {} with url: {}".format(
@@ -57,7 +57,7 @@ def send_notification_to_server(
 
     start_process = time.time()
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
         start_submit = time.time()
         for notification_count in range(total_notification_count):
             executor.submit(
@@ -72,9 +72,9 @@ def send_notification_to_server(
         )
 
     end_process = time.time()
- 
+
     global errors
-    
+
     print(
         "Total execution time for {} server with endpoint {} is : {}. Error count: {}\n\n".format(
             server_name, server_url, (end_process - start_process), len(errors)

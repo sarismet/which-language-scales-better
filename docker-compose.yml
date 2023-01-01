@@ -7,7 +7,7 @@ services:
     depends_on:
       - mock-notification-sender
     environment:
-      server.sleepTime: 100
+      server.sleepTime: 300
     networks:
       - notification_bridge
 
@@ -18,7 +18,7 @@ services:
     depends_on:
       - mock-notification-sender
     environment:
-      server.sleepTime: 100
+      server.sleepTime: 300
     networks:
       - notification_bridge
 
@@ -29,7 +29,18 @@ services:
     depends_on:
       - mock-notification-sender
     environment:
-      server.sleepTime: 100
+      server.sleepTime: 300
+    networks:
+      - notification_bridge
+
+  python-notification-server:
+    build: ./python
+    ports:
+      - 7003:7003
+    depends_on:
+      - mock-notification-sender
+    environment:
+      server.sleepTime: 300
     networks:
       - notification_bridge
 

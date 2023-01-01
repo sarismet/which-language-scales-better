@@ -1,6 +1,6 @@
 server:
-  port : 7000
-  sleepTime: 500
+  port: 7000
+  sleepTime: 200
 
 logging:
   level:
