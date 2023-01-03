@@ -1,7 +1,5 @@
 package com.iso.scale.service;
 
-import java.util.concurrent.CompletableFuture;
-
 import com.iso.scale.model.NotificationResponse;
 import com.iso.scale.model.SendNotificationRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.concurrent.CompletableFuture;
+
 @Slf4j
 @Service
 public class NotificationService {
-
-    private static final String SEND_NOTIFICATION_URL = "http://mock-java8-notification-sender:7004/send/";
 
     private final RestTemplate restTemplate;
 
@@ -31,12 +29,15 @@ public class NotificationService {
     }
 
     public CompletableFuture<NotificationResponse> sendAsyncNotification(
-            final SendNotificationRequest sendNotificationRequest) {
+            final String serverUrl, final SendNotificationRequest sendNotificationRequest) {
 
-        return CompletableFuture.supplyAsync(() -> sendSyncNotification(sendNotificationRequest), taskExecutor);
+        return CompletableFuture.supplyAsync(
+                () -> sendSyncNotification(serverUrl, sendNotificationRequest), taskExecutor
+        );
     }
 
-    public NotificationResponse sendSyncNotification(final SendNotificationRequest sendNotificationRequest) {
+    public NotificationResponse sendSyncNotification(final String serverUrl,
+                                                     final SendNotificationRequest sendNotificationRequest) {
         try {
             Thread.sleep(sleepTime);
         } catch (final InterruptedException ex) {
@@ -48,8 +49,7 @@ public class NotificationService {
         log.trace("Sending push to device with id: {}", sendNotificationRequest.getDeviceId());
 
         final HttpEntity<SendNotificationRequest> request = new HttpEntity<>(sendNotificationRequest);
-        final ResponseEntity<Boolean> response = restTemplate.postForEntity(SEND_NOTIFICATION_URL, request,
-                Boolean.class);
+        final ResponseEntity<Boolean> response = restTemplate.postForEntity(serverUrl, request, Boolean.class);
 
         if (Boolean.TRUE.equals(response.getBody())) {
             return new NotificationResponse();

@@ -1,5 +1,6 @@
 server:
   port: 7004
+  sleepTime: 0
 
 logging:
   level:

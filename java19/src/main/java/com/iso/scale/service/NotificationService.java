@@ -17,8 +17,6 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class NotificationService {
 
-    private static final String SEND_NOTIFICATION_URL = "http://mock-java8-notification-sender:7004/send/";
-
     private final RestTemplate restTemplate;
 
     @Value("${server.sleepTime}")
@@ -29,15 +27,17 @@ public class NotificationService {
     }
 
     public CompletableFuture<NotificationResponse> sendAsyncNotification(
-        final SendNotificationRequest sendNotificationRequest) {
+            final String serverUrl, final SendNotificationRequest sendNotificationRequest) {
 
         final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
-        return CompletableFuture.supplyAsync(() -> sendSyncNotification(sendNotificationRequest), executor);
-
+        return CompletableFuture.supplyAsync(
+                () -> sendSyncNotification(serverUrl, sendNotificationRequest), executor
+        );
     }
 
-    public NotificationResponse sendSyncNotification(final SendNotificationRequest sendNotificationRequest) {
+    public NotificationResponse sendSyncNotification(final String serverUrl,
+                                                     final SendNotificationRequest sendNotificationRequest) {
         try {
             Thread.sleep(sleepTime);
         } catch (final InterruptedException ex) {
@@ -49,8 +49,7 @@ public class NotificationService {
         log.trace("Sending push to device with id: {}", sendNotificationRequest.getDeviceId());
 
         final HttpEntity<SendNotificationRequest> request = new HttpEntity<>(sendNotificationRequest);
-        final ResponseEntity<Boolean> response =
-            restTemplate.postForEntity(SEND_NOTIFICATION_URL, request, Boolean.class);
+        final ResponseEntity<Boolean> response = restTemplate.postForEntity(serverUrl, request, Boolean.class);
 
         if (Boolean.TRUE.equals(response.getBody())) {
             return new NotificationResponse();
