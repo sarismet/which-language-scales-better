@@ -10,7 +10,7 @@ MOCK_JAVA8_NOTIFICATION_SERVER_URL = os.getenv("notification.sender-server.java8
 MOCK_GOLANG_NOTIFICATION_SERVER_URL = os.getenv("notification.sender-server.golang.url", "http://localhost:7005/send/")
 
 
-SLEEP_TIME = int(os.getenv("server.sleepTime", 0)) / 1000
+SLEEP_TIME = int(os.getenv("server.sleepTime", 200)) / 1000
 
 
 class NotificationSendRequestModel(BaseModel):
