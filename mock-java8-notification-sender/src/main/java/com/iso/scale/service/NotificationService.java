@@ -1,12 +1,14 @@
 package com.iso.scale.service;
 
+import java.util.concurrent.CompletableFuture;
+
+import javax.validation.constraints.NotNull;
+
+import com.iso.scale.model.NotificationResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
-
-import javax.validation.constraints.NotNull;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -21,21 +23,24 @@ public class NotificationService {
         this.taskExecutor = taskExecutor;
     }
 
-    public CompletableFuture<Boolean> sendNotification(@NotNull final String deviceId) {
+    public CompletableFuture<NotificationResponse> sendNotification(@NotNull final String deviceId) {
         return CompletableFuture.supplyAsync(
-                () -> {
-                    try {
-                        Thread.sleep(sleepTime);
-                    } catch (final InterruptedException ex) {
-                        Thread.currentThread().interrupt();
+            () -> {
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (final InterruptedException ex) {
+                    Thread.currentThread().interrupt();
 
-                        log.error("Error occurred while sleeping in thread");
-                    }
+                    log.error("Error occurred while sleeping in thread");
+                }
 
-                    log.trace("Sending push to device with id: {}", deviceId);
+                log.trace("Sending push to device with id: {}", deviceId);
+                final NotificationResponse notificationResponse = new NotificationResponse();
 
-                    return true;
-                }, taskExecutor
+                notificationResponse.setSuccess(true);
+
+                return notificationResponse;
+            }, taskExecutor
         );
     }
 

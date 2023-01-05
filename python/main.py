@@ -6,11 +6,11 @@ import os
 
 app = FastAPI()
 
-MOCK_JAVA8_NOTIFICATION_SERVER_URL = "http://mock-java8-notification-sender:7004/send/"
-MOCK_GOLANG_NOTIFICATION_SERVER_URL = (
-    "http://mock-golang-notification-sender:7005/send/"
-)
-SLEEP_TIME = int(os.getenv("server.sleepTime")) / 1000
+MOCK_JAVA8_NOTIFICATION_SERVER_URL = os.getenv("notification.sender-server.java8.url", "http://localhost:7004/send/")
+MOCK_GOLANG_NOTIFICATION_SERVER_URL = os.getenv("notification.sender-server.golang.url", "http://localhost:7005/send/")
+
+
+SLEEP_TIME = int(os.getenv("server.sleepTime", 0)) / 1000
 
 
 class NotificationSendRequestModel(BaseModel):

@@ -11,8 +11,8 @@ import (
 	"github.com/labstack/echo"
 )
 
-var send_java8_notification_url = "http://mock-java8-notification-sender:7004/send/"
-var send_golang_notification_url = "http://mock-golang-notification-sender:7005/send/"
+var send_java8_notification_url string
+var send_golang_notification_url string
 
 type SendNotificationRequest struct {
 	Device_id string `json:"deviceId"`
@@ -27,6 +27,18 @@ var sleep_time int64
 func main() {
 	fmt.Sscan(os.Getenv("server.sleepTime"), &sleep_time)
 	fmt.Println("Sleep time is:", sleep_time)
+
+	if os.Getenv("notification.sender-server.java8.url") == "" {
+		send_java8_notification_url = "http://localhost:7004/send/"
+	} else {
+		fmt.Sscan(os.Getenv("notification.sender-server.java8.url"), &send_java8_notification_url)
+	}
+
+	if os.Getenv("notification.sender-server.golang.url") == "" {
+		send_golang_notification_url = "http://localhost:7005/send/"
+	} else {
+		fmt.Sscan(os.Getenv("notification.sender-server.java8.url"), &send_golang_notification_url)
+	}
 
 	echo_server := echo.New()
 
@@ -46,9 +58,7 @@ func send_notification_to_java(c echo.Context) error {
 
 	notification_to_server_result, _ := send_notification_to_server(send_notification_request, send_java8_notification_url)
 
-	return c.JSON(http.StatusOK, &Result{
-		Success: notification_to_server_result,
-	})
+	return c.JSON(http.StatusOK, notification_to_server_result)
 }
 
 func send_notification_to_golang(c echo.Context) error {
@@ -62,39 +72,40 @@ func send_notification_to_golang(c echo.Context) error {
 
 	notification_to_server_result, _ := send_notification_to_server(send_notification_request, send_golang_notification_url)
 
-	return c.JSON(http.StatusOK, &Result{
-		Success: notification_to_server_result,
-	})
+	return c.JSON(http.StatusOK, notification_to_server_result)
 }
 
-func send_notification_to_server(send_notification_request *SendNotificationRequest, send_notification_url string) (bool, error) {
+func send_notification_to_server(send_notification_request *SendNotificationRequest, send_notification_url string) (*Result, error) {
 	values := map[string]string{"deviceId": send_notification_request.Device_id}
 	json_data, err := json.Marshal(values)
 
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
 	notification_to_server_result := <-send_notification(json_data, send_notification_url)
 
-	return notification_to_server_result, nil
+	return &notification_to_server_result, nil
 }
 
-func send_notification(json_data []byte, send_notification_url string) <-chan bool {
-	notificaiton_channel := make(chan bool)
+func send_notification(json_data []byte, send_notification_url string) <-chan Result {
+	notificaiton_channel := make(chan Result)
 
 	go func() {
 		defer close(notificaiton_channel)
 
 		time.Sleep(time.Duration(sleep_time) * time.Millisecond)
 
-		_, err := http.Post(send_notification_url, "application/json", bytes.NewBuffer(json_data))
-
+		response, err := http.Post(send_notification_url, "application/json", bytes.NewBuffer(json_data))
 		if err != nil {
-			fmt.Println(err)
-			notificaiton_channel <- false
+			panic(err)
 		}
-		notificaiton_channel <- true
+
+		var result Result
+
+		json.NewDecoder(response.Body).Decode(&result)
+
+		notificaiton_channel <- result
 	}()
 
 	return notificaiton_channel

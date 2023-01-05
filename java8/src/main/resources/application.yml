@@ -2,6 +2,13 @@ server:
   port: 7000
   sleepTime: 200
 
+notification:
+  sender-server:
+    java8:
+      url: "http://localhost:7004/send/"
+    golang:
+      url: "http://localhost:7005/send/"
+
 logging:
   level:
     com.iso.scale: INFO

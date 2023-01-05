@@ -1,5 +1,6 @@
 package com.iso.scale.controller;
 
+import com.iso.scale.model.NotificationResponse;
 import com.iso.scale.model.SendNotificationRequest;
 import com.iso.scale.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +23,10 @@ public class NotificationController {
     }
 
     @PostMapping("/send/")
-    public DeferredResult<Boolean> sendNotification(
+    public DeferredResult<NotificationResponse> sendNotification(
             @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
-        final DeferredResult<Boolean> deferredResult = new DeferredResult<>();
+        final DeferredResult<NotificationResponse> deferredResult = new DeferredResult<>();
 
         this.notificationService.sendNotification(
                 sendNotificationRequest.getDeviceId()
@@ -33,10 +34,10 @@ public class NotificationController {
             if (Objects.nonNull(ex)) {
                 log.error("Error occurred while sending push notification", ex);
 
-                deferredResult.setErrorResult(false);
+                deferredResult.setErrorResult(ex);
             }
 
-            deferredResult.setResult(true);
+            deferredResult.setResult(result);
         });
 
         return deferredResult;

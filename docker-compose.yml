@@ -8,6 +8,8 @@ services:
       - mock-java8-notification-sender
     environment:
       server.sleepTime: 300
+      notification.sender-server.java8.url: "http://mock-java8-notification-sender:7004/send/"
+      notification.sender-server.golang.url: "http://mock-golang-notification-sender:7005/send/"
     networks:
       - notification_bridge
 
@@ -19,6 +21,8 @@ services:
       - mock-java8-notification-sender
     environment:
       server.sleepTime: 300
+      notification.sender-server.java8.url: "http://mock-java8-notification-sender:7004/send/"
+      notification.sender-server.golang.url: "http://mock-golang-notification-sender:7005/send/"
     networks:
       - notification_bridge
 
@@ -31,6 +35,8 @@ services:
       - mock-golang-notification-sender
     environment:
       server.sleepTime: 300
+      notification.sender-server.java8.url: "http://mock-java8-notification-sender:7004/send/"
+      notification.sender-server.golang.url: "http://mock-golang-notification-sender:7005/send/"
     networks:
       - notification_bridge
 
@@ -43,6 +49,8 @@ services:
       - mock-golang-notification-sender
     environment:
       server.sleepTime: 300
+      notification.sender-server.java8.url: "http://mock-java8-notification-sender:7004/send/"
+      notification.sender-server.golang.url: "http://mock-golang-notification-sender:7005/send/"
     networks:
       - notification_bridge
 
@@ -50,6 +58,8 @@ services:
     build: ./mock-java8-notification-sender
     ports:
       - 7004:7004
+    environment:
+      server.port: 7004
     networks:
       - notification_bridge
 
@@ -57,6 +67,8 @@ services:
     build: ./mock-golang-notification-sender
     ports:
       - 7005:7005
+    environment:
+      server.port: 7005
     networks:
       - notification_bridge
 

@@ -8,4 +8,5 @@ FROM openjdk:8u312-jre-slim
 COPY --from=build /home/app/target/*.jar /usr/local/lib/scale-mock-java8-notification-server.jar
 
 EXPOSE 7004
+
 ENTRYPOINT ["java","-jar","/usr/local/lib/scale-mock-java8-notification-server.jar"]

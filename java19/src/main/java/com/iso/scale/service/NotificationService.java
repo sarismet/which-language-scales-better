@@ -1,5 +1,6 @@
 package com.iso.scale.service;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,17 +28,17 @@ public class NotificationService {
     }
 
     public CompletableFuture<NotificationResponse> sendAsyncNotification(
-            final String serverUrl, final SendNotificationRequest sendNotificationRequest) {
+        final String serverUrl, final SendNotificationRequest sendNotificationRequest) {
 
         final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
         return CompletableFuture.supplyAsync(
-                () -> sendSyncNotification(serverUrl, sendNotificationRequest), executor
+            () -> sendSyncNotification(serverUrl, sendNotificationRequest), executor
         );
     }
 
     public NotificationResponse sendSyncNotification(final String serverUrl,
-                                                     final SendNotificationRequest sendNotificationRequest) {
+        final SendNotificationRequest sendNotificationRequest) {
         try {
             Thread.sleep(sleepTime);
         } catch (final InterruptedException ex) {
@@ -49,10 +50,13 @@ public class NotificationService {
         log.trace("Sending push to device with id: {}", sendNotificationRequest.getDeviceId());
 
         final HttpEntity<SendNotificationRequest> request = new HttpEntity<>(sendNotificationRequest);
-        final ResponseEntity<Boolean> response = restTemplate.postForEntity(serverUrl, request, Boolean.class);
+        final ResponseEntity<NotificationResponse> response =
+            restTemplate.postForEntity(serverUrl, request, NotificationResponse.class);
 
-        if (Boolean.TRUE.equals(response.getBody())) {
-            return new NotificationResponse();
+        final NotificationResponse notificationResponse = response.getBody();
+
+        if (Objects.nonNull(response.getBody()) && response.getBody().isSuccess()) {
+            return notificationResponse;
         } else {
             throw new RuntimeException("Push notification service is unavailable");
         }

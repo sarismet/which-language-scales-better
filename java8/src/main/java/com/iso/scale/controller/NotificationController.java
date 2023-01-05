@@ -4,6 +4,7 @@ import com.iso.scale.model.NotificationResponse;
 import com.iso.scale.model.SendNotificationRequest;
 import com.iso.scale.service.NotificationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,13 +19,15 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 public class NotificationController {
 
-    private static final String SEND_NOTIFICATION_TO_JAVA8_SERVER_URL = "http://mock-java8-notification-sender:7004/send/";
-
-    private static final String SEND_NOTIFICATION_TO_GOLANG_SERVER_URL = "http://mock-golang-notification-sender:7005/send/";
-
     private final NotificationService notificationService;
 
     private final TaskExecutor taskExecutor;
+
+    @Value("${notification.sender-server.java8.url}")
+    private String sendNotificationToJava8ServerUrl;
+
+    @Value("${notification.sender-server.golang.url}")
+    private String getSendNotificationToGolangServerUrl;
 
     public NotificationController(final NotificationService notificationService, final TaskExecutor taskExecutor) {
         this.notificationService = notificationService;
@@ -36,7 +39,7 @@ public class NotificationController {
             @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         return this.notificationService
-                .sendAsyncNotification(SEND_NOTIFICATION_TO_JAVA8_SERVER_URL, sendNotificationRequest)
+                .sendAsyncNotification(sendNotificationToJava8ServerUrl, sendNotificationRequest)
                 .join();
     }
 
@@ -45,7 +48,7 @@ public class NotificationController {
             @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         return this.notificationService
-                .sendAsyncNotification(SEND_NOTIFICATION_TO_GOLANG_SERVER_URL, sendNotificationRequest)
+                .sendAsyncNotification(getSendNotificationToGolangServerUrl, sendNotificationRequest)
                 .join();
     }
 
@@ -57,8 +60,8 @@ public class NotificationController {
         CompletableFuture
                 .runAsync(() -> {
                     final NotificationResponse notificationResponse =
-                            this.notificationService.sendSyncNotification(SEND_NOTIFICATION_TO_JAVA8_SERVER_URL,
-                                    sendNotificationRequest
+                            this.notificationService.sendSyncNotification(
+                                sendNotificationToJava8ServerUrl, sendNotificationRequest
                             );
 
                     result.setResult(notificationResponse);
@@ -81,7 +84,7 @@ public class NotificationController {
                 .runAsync(() -> {
                     final NotificationResponse notificationResponse =
                             this.notificationService.sendSyncNotification(
-                                    SEND_NOTIFICATION_TO_GOLANG_SERVER_URL, sendNotificationRequest
+                                getSendNotificationToGolangServerUrl, sendNotificationRequest
                             );
 
                     result.setResult(notificationResponse);
@@ -102,7 +105,7 @@ public class NotificationController {
         final DeferredResult<NotificationResponse> deferredResult = new DeferredResult<>();
 
         this.notificationService.sendAsyncNotification(
-                SEND_NOTIFICATION_TO_JAVA8_SERVER_URL, sendNotificationRequest
+            sendNotificationToJava8ServerUrl, sendNotificationRequest
         ).whenComplete((result, ex) -> {
             if (Objects.nonNull(ex)) {
                 log.error("Error occurred while sending push notification", ex);
@@ -125,7 +128,7 @@ public class NotificationController {
         final DeferredResult<NotificationResponse> deferredResult = new DeferredResult<>();
 
         this.notificationService.sendAsyncNotification(
-                SEND_NOTIFICATION_TO_GOLANG_SERVER_URL, sendNotificationRequest
+            getSendNotificationToGolangServerUrl, sendNotificationRequest
         ).whenComplete((result, ex) -> {
             if (Objects.nonNull(ex)) {
                 log.error("Error occurred while sending push notification", ex);
