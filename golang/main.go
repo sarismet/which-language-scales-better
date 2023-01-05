@@ -98,7 +98,7 @@ func send_notification(json_data []byte, send_notification_url string) <-chan Re
 
 		response, err := http.Post(send_notification_url, "application/json", bytes.NewBuffer(json_data))
 		if err != nil {
-			panic(err)
+			notificaiton_channel <- Result{Success: false}
 		}
 
 		var result Result
