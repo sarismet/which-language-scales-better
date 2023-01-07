@@ -1,12 +1,11 @@
 use axum::{
     routing::post,
+    routing::get,
     http::StatusCode,
     response::IntoResponse,
     Json, Router,
 };
-use std::net::SocketAddr;
 use serde::{Deserialize, Serialize};
-use std::env;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct SendNotificationRequest {
@@ -24,25 +23,24 @@ async fn main() {
     let app = Router::new()
                 .route("/send/", post(send_notification_to_java))
                 .route("/send/golang/", post(send_notification_to_golang));
-    let addr = SocketAddr::from(([127, 0, 0, 1], 7005));
 
-    println!("axum server is running at port 7005");
+    println!("axum server is running at port 7004");
 
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    axum::Server::bind(&"0.0.0.0:7004".parse().unwrap())
+    .serve(app.into_make_service())
+    .await
+    .unwrap();
 }
 
 async fn send_notification_to_java(
     Json(_send_notification_request): Json<SendNotificationRequest>,
 ) -> impl IntoResponse {
-    
-    //let SEND_JAVA8_NOTIFICATION_URL: &'static std::string::String = &std::env::var("notification.sender-server.java8.url").unwrap_or("http://localhost:7100/send/".to_string());
 
-    let SEND_JAVA8_NOTIFICATION_URL: &'static str = "http://localhost:7100/send/";
+    let _send_java8_notification_url: std::string::String = std::env::var("notification.sender-server.java8.url").unwrap_or("http://localhost:7100/send/".to_string());
 
-    match send_notification_to_server(_send_notification_request, SEND_JAVA8_NOTIFICATION_URL).await {
+    println!("_send_java8_notification_url {:?}", _send_java8_notification_url);
+
+    match send_notification_to_server(_send_notification_request, &_send_java8_notification_url).await {
         Err(error) => {
             println!("Error occurred while sending notificatiton {:?}", error);
 
@@ -59,11 +57,11 @@ async fn send_notification_to_golang(
     Json(_send_notification_request): Json<SendNotificationRequest>,
 ) -> impl IntoResponse {
 
-    //let SEND_GOLANG_NOTIFICATION_URL: &'static std::string::String = &std::env::var("notification.sender-server.golang.url").unwrap_or("http://localhost:7101/send/".to_string());
+    let _send_golang_notification_url: std::string::String = std::env::var("notification.sender-server.java8.url").unwrap_or("http://localhost:7101/send/".to_string());
 
-    let SEND_GOLANG_NOTIFICATION_URL: &'static str = "http://localhost:7101/send/";
+    println!("_send_golang_notification_url {:?}", _send_golang_notification_url);
 
-    match send_notification_to_server(_send_notification_request, SEND_GOLANG_NOTIFICATION_URL).await {
+    match send_notification_to_server(_send_notification_request, &_send_golang_notification_url).await {
         Err(error) => {
             println!("Error occurred while sending notificatiton {:?}", error);
 
@@ -77,8 +75,14 @@ async fn send_notification_to_golang(
 }
 
 async fn send_notification_to_server(
-    _send_notification_request: SendNotificationRequest, _send_notification_url: &str
+    _send_notification_request: SendNotificationRequest, _send_notification_url: &std::string::String
 ) -> Result<NotificationResponse, Box<dyn std::error::Error>> {
+
+    let sleep_time_env: std::string::String = std::env::var("server.sleepTime").unwrap_or("200".to_string());
+    let sleep_time = sleep_time_env.parse::<u64>().unwrap();
+    let sleep_time_duration = std::time::Duration::from_millis(sleep_time);
+
+    std::thread::sleep(sleep_time_duration);
 
     let _res = reqwest::Client::new()
         .post(_send_notification_url)

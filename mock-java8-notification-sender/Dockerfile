@@ -7,6 +7,6 @@ RUN mvn -f /home/app/pom.xml clean package
 FROM openjdk:8u312-jre-slim
 COPY --from=build /home/app/target/*.jar /usr/local/lib/scale-mock-java8-notification-server.jar
 
-EXPOSE 7004
+EXPOSE 7100
 
 ENTRYPOINT ["java","-jar","/usr/local/lib/scale-mock-java8-notification-server.jar"]

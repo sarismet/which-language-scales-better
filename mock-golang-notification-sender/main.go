@@ -31,7 +31,7 @@ func main() {
 	echo_server := echo.New()
 
 	echo_server.POST("/send/", send_notification)
-	echo_server.Start(":7005")
+	echo_server.Start(":7101")
 }
 
 func send_notification(c echo.Context) error {

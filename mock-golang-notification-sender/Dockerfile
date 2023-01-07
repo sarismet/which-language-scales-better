@@ -12,6 +12,6 @@ RUN chmod a+x /go/src/github.com/mock-golang-notification-sender
 
 RUN go get github.com/labstack/echo
 
-EXPOSE 7005
+EXPOSE 7101
 
 CMD ["go","run","/go/src/github.com/mock-golang-notification-sender/main.go"]
