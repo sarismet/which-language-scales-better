@@ -8,6 +8,11 @@ group = 'com.iso'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 19
 
+jar {
+   enabled = true
+   archiveClassifier = ''
+}
+
 repositories {
 	mavenCentral()
 }

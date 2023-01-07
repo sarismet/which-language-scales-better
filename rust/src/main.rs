@@ -1,6 +1,5 @@
 use axum::{
     routing::post,
-    routing::get,
     http::StatusCode,
     response::IntoResponse,
     Json, Router,
