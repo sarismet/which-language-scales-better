@@ -7,7 +7,7 @@ FROM openjdk:19-jdk
 
 RUN mkdir /app
 
-COPY --from=gradleimage /home/gradle/src/build/libs/*.jar /app/scale-java19.jar
+COPY --from=gradleimage /home/gradle/src/build/libs/*-SNAPSHOT.jar /app/scale-java19.jar
 
 EXPOSE 7001
 

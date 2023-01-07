@@ -48,7 +48,7 @@ async fn send_notification_to_java(
             })) 
         }
         ,
-        Ok(notification_result) => return (StatusCode::CREATED, Json(notification_result)) 
+        Ok(notification_result) => return (StatusCode::OK, Json(notification_result)) 
     } 
 }
 
