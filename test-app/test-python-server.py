@@ -10,11 +10,11 @@ URL_TO_JAVA8_SERVER = HOST + ":" + PORT + "/send/"
 URL_TO_GOLANG_SERVER = HOST + ":" + PORT + "/send/golang/"
 
 
-def test_golang_notification_to_server():
+def test_python_notification_to_server():
     send_notification_to_server("Python", URL_TO_JAVA8_SERVER, 1000)
     time.sleep(10)
     send_notification_to_server("Python", URL_TO_GOLANG_SERVER, 1000)
 
 
 if __name__ == "__main__":
-    test_golang_notification_to_server()
+    test_python_notification_to_server()
