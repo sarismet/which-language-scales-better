@@ -83,6 +83,6 @@ def send_notification_to_server(
 
     print(
         "Total execution time for {} server with endpoint {} is : {}. Error count is : {}\n\n".format(
-            server_name, server_url, (end_process - start_process), len(error_count)
+            server_name, server_url, (end_process - start_process), error_count
         )
     )

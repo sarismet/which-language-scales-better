@@ -19,17 +19,26 @@ URL_TO_GOLANG_SERVER_V3 = HOST + ":" + PORT + "/send/golang/v3/"
 
 
 def test_java19_notification_to_server():
+    send_notification_to_server("Java 19", URL_TO_ITSELF_V1, 1000)
+    time.sleep(5)
+
     send_notification_to_server("Java 19", URL_TO_JAVA8_SERVER_V1, 1000)
     time.sleep(5)
 
     send_notification_to_server("Java 19", URL_TO_GOLANG_SERVER_V1, 1000)
     time.sleep(10)
 
+    send_notification_to_server("Java 19", URL_TO_ITSELF_V2, 1000)
+    time.sleep(5)
+
     send_notification_to_server("Java 19", URL_TO_JAVA8_SERVER_V2, 1000)
     time.sleep(5)
 
     send_notification_to_server("Java 19", URL_TO_GOLANG_SERVER_V2, 1000)
     time.sleep(10)
+
+    send_notification_to_server("Java 19", URL_TO_ITSELF_V3, 1000)
+    time.sleep(5)
 
     send_notification_to_server("Java 19", URL_TO_JAVA8_SERVER_V3, 1000)
     time.sleep(5)
