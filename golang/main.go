@@ -45,7 +45,7 @@ func main() {
 	echo_server.POST("/send/itself/", send_notification_itself)
 	echo_server.POST("/send/java/", send_notification_to_java)
 	echo_server.POST("/send/golang/", send_notification_to_golang)
-	echo_server.Start(":7002")
+	echo_server.Start("0.0.0.0:7002")
 }
 
 func send_notification_itself(c echo.Context) error {

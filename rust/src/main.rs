@@ -33,7 +33,7 @@ async fn main() {
 
     println!("axum server is running at port 7004");
 
-    axum::Server::bind(&"127.0.0.1:7004".parse().unwrap())
+    axum::Server::bind(&"0.0.0.0:7004".parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();

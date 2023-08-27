@@ -31,7 +31,7 @@ func main() {
 	echo_server := echo.New()
 
 	echo_server.POST("/send/", send_notification)
-	echo_server.Start("127.0.0.1:7101")
+	echo_server.Start("0.0.0.0:7101")
 }
 
 func send_notification(c echo.Context) error {
