@@ -11,7 +11,7 @@ URL_TO_JAVA8_SERVER = HOST + ":" + PORT + "/send/java/"
 URL_TO_GOLANG_SERVER = HOST + ":" + PORT + "/send/golang/"
 
 
-def test_rust_notification_to_itself():
+def test_rust_notification_to_server():
     send_notification_to_server("Rust", URL_TO_ITSELF, 1000)
     time.sleep(10)
     send_notification_to_server("Rust", URL_TO_JAVA8_SERVER, 1000)

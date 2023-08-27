@@ -13,7 +13,7 @@ URL_TO_ITSELF_V2 = HOST + ":" + PORT + "/send/itself/v2/"
 URL_TO_JAVA8_SERVER_V2 = HOST + ":" + PORT + "/send/java/v2/"
 URL_TO_GOLANG_SERVER_V2 = HOST + ":" + PORT + "/send/golang/v2/"
 
-URL_TO_ITSELF_v3 = HOST + ":" + PORT + "/send/itself/v3/"
+URL_TO_ITSELF_V3 = HOST + ":" + PORT + "/send/itself/v3/"
 URL_TO_JAVA8_SERVER_V3 = HOST + ":" + PORT + "/send/java/v3/"
 URL_TO_GOLANG_SERVER_V3 = HOST + ":" + PORT + "/send/golang/v3/"
 
