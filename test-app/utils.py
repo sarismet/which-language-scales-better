@@ -30,6 +30,7 @@ def send_notification_to_related_server(
                 log_error(server_url, notification_count)
 
                 return False
+            return True
         elif response.status_code != 200:
             log_error(server_url, notification_count)
 
