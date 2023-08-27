@@ -1,24 +1,35 @@
-FROM rust:1.72 as build
+FROM ubuntu:20.04
 
-RUN USER=root cargo new --bin iso_scale
-WORKDIR /iso_scale
+ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-COPY ./Cargo.lock ./Cargo.lock
-COPY ./Cargo.toml ./Cargo.toml
+RUN apt-get -qq update
+
+RUN apt-get install -y -q \
+    build-essential \
+    openssl \
+    make \
+    cmake \
+    pkg-config \
+    libssl-dev \
+    libpq-dev \
+    curl \
+    pkg-config \
+    openssl
+    
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+WORKDIR /usr/src/app
+
+RUN USER=root cargo init
+
+COPY Cargo.toml .
+COPY ./src src
 
 RUN cargo build --release
-RUN rm src/*.rs
-
-COPY ./src ./src
-
-RUN rm ./target/release/deps/*
-RUN cargo build --release
-
-FROM rust:1.72
-
-COPY --from=build /iso_scale/target/release/rust .
 
 EXPOSE 7004
 
-CMD ["./rust"]
-
+CMD ["./target/release/rust"]
