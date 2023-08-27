@@ -5,13 +5,16 @@ from utils import send_notification_to_server
 HOST = "http://localhost"
 PORT = "7001"
 
-URL_TO_JAVA8_SERVER_V1 = HOST + ":" + PORT + "/send/"
+URL_TO_ITSELF_V1 = HOST + ":" + PORT + "/send/itself/"
+URL_TO_JAVA8_SERVER_V1 = HOST + ":" + PORT + "/send/java/"
 URL_TO_GOLANG_SERVER_V1 = HOST + ":" + PORT + "/send/golang/"
 
-URL_TO_JAVA8_SERVER_V2 = HOST + ":" + PORT + "/send/v2/"
+URL_TO_ITSELF_V2 = HOST + ":" + PORT + "/send/itself/v2/"
+URL_TO_JAVA8_SERVER_V2 = HOST + ":" + PORT + "/send/java/v2/"
 URL_TO_GOLANG_SERVER_V2 = HOST + ":" + PORT + "/send/golang/v2/"
 
-URL_TO_JAVA8_SERVER_V3 = HOST + ":" + PORT + "/send/v3/"
+URL_TO_ITSELF_V3 = HOST + ":" + PORT + "/send/itself/v3/"
+URL_TO_JAVA8_SERVER_V3 = HOST + ":" + PORT + "/send/java/v3/"
 URL_TO_GOLANG_SERVER_V3 = HOST + ":" + PORT + "/send/golang/v3/"
 
 

@@ -30,39 +30,57 @@ public class NotificationService {
     }
 
     public CompletableFuture<NotificationResponse> sendAsyncNotification(
-            final String serverUrl, final SendNotificationRequest sendNotificationRequest) {
+        final String serverUrl, final SendNotificationRequest sendNotificationRequest) {
 
         return CompletableFuture.supplyAsync(
-                () -> sendSyncNotification(serverUrl, sendNotificationRequest), taskExecutor);
+            () -> sendSyncNotification(serverUrl, sendNotificationRequest), taskExecutor
+        );
     }
 
     public CompletableFuture<NotificationResponse> sendAsyncNotificationItself() {
 
         return CompletableFuture.supplyAsync(
-                () -> {
-                    try {
-                        Thread.sleep(sleepTime);
-                    } catch (final InterruptedException ex) {
-                        Thread.currentThread().interrupt();
+            () -> {
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (final InterruptedException ex) {
+                    Thread.currentThread().interrupt();
 
-                        log.error("Error occurred while sleeping in thread");
-                    }
+                    log.error("Error occurred while sleeping in thread");
+                }
 
-                    final NotificationResponse notificationResponse = new NotificationResponse();
-                    notificationResponse.setSuccess(true);
+                final NotificationResponse notificationResponse = new NotificationResponse();
+                notificationResponse.setSuccess(true);
 
-                    return notificationResponse;
-                }, taskExecutor);
+                return notificationResponse;
+            }, taskExecutor
+        );
+    }
+
+    public NotificationResponse sendSyncNotificationItself() {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+
+            log.error("Error occurred while sleeping in thread");
+        }
+
+        final NotificationResponse notificationResponse = new NotificationResponse();
+        notificationResponse.setSuccess(true);
+
+        return notificationResponse;
     }
 
     public NotificationResponse sendSyncNotification(final String serverUrl,
-            final SendNotificationRequest sendNotificationRequest) {
+        final SendNotificationRequest sendNotificationRequest) {
 
         log.trace("Sending push to device with id: {}", sendNotificationRequest.getDeviceId());
 
         final HttpEntity<SendNotificationRequest> request = new HttpEntity<>(sendNotificationRequest);
         final ResponseEntity<NotificationResponse> response = restTemplate.postForEntity(serverUrl, request,
-                NotificationResponse.class);
+            NotificationResponse.class
+        );
 
         final NotificationResponse notificationResponse = response.getBody();
 

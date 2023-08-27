@@ -1,5 +1,10 @@
 package com.iso.scale.controller;
 
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+
+import javax.validation.Valid;
+
 import com.iso.scale.model.NotificationResponse;
 import com.iso.scale.model.SendNotificationRequest;
 import com.iso.scale.service.NotificationService;
@@ -10,10 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
-
-import javax.validation.Valid;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
@@ -36,113 +37,157 @@ public class NotificationController {
 
     @PostMapping("/send/itself/")
     public NotificationResponse sendNotificationItself(
-            @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         return this.notificationService
-                .sendAsyncNotificationItself()
-                .join();
+            .sendAsyncNotificationItself()
+            .join();
     }
 
     @PostMapping("/send/java/")
     public NotificationResponse sendNotificationToJava8Server(
-            @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         return this.notificationService
-                .sendAsyncNotification(sendNotificationToJava8ServerUrl, sendNotificationRequest)
-                .join();
+            .sendAsyncNotification(sendNotificationToJava8ServerUrl, sendNotificationRequest)
+            .join();
     }
 
     @PostMapping("/send/golang/")
     public NotificationResponse sendNotificationToGolangServer(
-            @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         return this.notificationService
-                .sendAsyncNotification(getSendNotificationToGolangServerUrl, sendNotificationRequest)
-                .join();
+            .sendAsyncNotification(getSendNotificationToGolangServerUrl, sendNotificationRequest)
+            .join();
     }
 
     @PostMapping("/send/java/v2/")
     public DeferredResult<NotificationResponse> sendNotificationToJava8ServerV2(
-            @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
+
         final DeferredResult<NotificationResponse> result = new DeferredResult<>();
 
         CompletableFuture
-                .runAsync(() -> {
-                    final NotificationResponse notificationResponse = this.notificationService.sendSyncNotification(
-                            sendNotificationToJava8ServerUrl, sendNotificationRequest);
+            .runAsync(() -> {
+                final NotificationResponse notificationResponse = this.notificationService.sendSyncNotification(
+                    sendNotificationToJava8ServerUrl, sendNotificationRequest);
 
-                    result.setResult(notificationResponse);
-                }, taskExecutor)
-                .exceptionally(ex -> {
-                    result.setErrorResult(ex.getCause());
+                result.setResult(notificationResponse);
+            }, taskExecutor)
+            .exceptionally(ex -> {
+                result.setErrorResult(ex.getCause());
 
-                    return null;
-                });
+                return null;
+            });
+
+        return result;
+    }
+
+    @PostMapping("/send/itself/v2/")
+    public DeferredResult<NotificationResponse> sendNotificationToItselfV2(
+        @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
+
+        final DeferredResult<NotificationResponse> result = new DeferredResult<>();
+
+        CompletableFuture
+            .runAsync(() -> {
+                final NotificationResponse notificationResponse = this.notificationService.sendSyncNotificationItself();
+
+                result.setResult(notificationResponse);
+            }, taskExecutor)
+            .exceptionally(ex -> {
+                result.setErrorResult(ex.getCause());
+
+                return null;
+            });
 
         return result;
     }
 
     @PostMapping("/send/golang/v2/")
     public DeferredResult<NotificationResponse> sendNotificationToGolangServerV2(
-            @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
+
         final DeferredResult<NotificationResponse> result = new DeferredResult<>();
 
         CompletableFuture
-                .runAsync(() -> {
-                    final NotificationResponse notificationResponse = this.notificationService.sendSyncNotification(
-                            getSendNotificationToGolangServerUrl, sendNotificationRequest);
+            .runAsync(() -> {
+                final NotificationResponse notificationResponse = this.notificationService.sendSyncNotification(
+                    getSendNotificationToGolangServerUrl, sendNotificationRequest);
 
-                    result.setResult(notificationResponse);
-                }, taskExecutor)
-                .exceptionally(ex -> {
-                    result.setErrorResult(ex.getCause());
+                result.setResult(notificationResponse);
+            }, taskExecutor)
+            .exceptionally(ex -> {
+                result.setErrorResult(ex.getCause());
 
-                    return null;
-                });
+                return null;
+            });
 
         return result;
     }
 
+    @PostMapping("/send/itself/v3/")
+    public DeferredResult<NotificationResponse> sendNotificationToItselfV3(
+        @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
+
+        final DeferredResult<NotificationResponse> deferredResult = new DeferredResult<>();
+
+        this.notificationService.sendAsyncNotificationItself().whenComplete((result, ex) -> {
+            if (Objects.nonNull(ex)) {
+                log.error("Error occurred while sending push notification", ex);
+
+                final NotificationResponse errorResponse = new NotificationResponse();
+                errorResponse.setSuccess(false);
+                deferredResult.setErrorResult(errorResponse);
+            }
+
+            deferredResult.setResult(result);
+        });
+
+        return deferredResult;
+    }
+
     @PostMapping("/send/java/v3/")
     public DeferredResult<NotificationResponse> sendNotificationToJava8ServerV3(
-            @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         final DeferredResult<NotificationResponse> deferredResult = new DeferredResult<>();
 
         this.notificationService.sendAsyncNotification(
-                sendNotificationToJava8ServerUrl, sendNotificationRequest).whenComplete((result, ex) -> {
-                    if (Objects.nonNull(ex)) {
-                        log.error("Error occurred while sending push notification", ex);
+            sendNotificationToJava8ServerUrl, sendNotificationRequest).whenComplete((result, ex) -> {
+            if (Objects.nonNull(ex)) {
+                log.error("Error occurred while sending push notification", ex);
 
-                        final NotificationResponse errorResponse = new NotificationResponse();
-                        errorResponse.setSuccess(false);
-                        deferredResult.setErrorResult(errorResponse);
-                    }
+                final NotificationResponse errorResponse = new NotificationResponse();
+                errorResponse.setSuccess(false);
+                deferredResult.setErrorResult(errorResponse);
+            }
 
-                    deferredResult.setResult(result);
-                });
+            deferredResult.setResult(result);
+        });
 
         return deferredResult;
     }
 
     @PostMapping("/send/golang/v3/")
     public DeferredResult<NotificationResponse> sendNotificationToGolangServerV3(
-            @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @Valid @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         final DeferredResult<NotificationResponse> deferredResult = new DeferredResult<>();
 
         this.notificationService.sendAsyncNotification(
-                getSendNotificationToGolangServerUrl, sendNotificationRequest).whenComplete((result, ex) -> {
-                    if (Objects.nonNull(ex)) {
-                        log.error("Error occurred while sending push notification", ex);
+            getSendNotificationToGolangServerUrl, sendNotificationRequest).whenComplete((result, ex) -> {
+            if (Objects.nonNull(ex)) {
+                log.error("Error occurred while sending push notification", ex);
 
-                        final NotificationResponse errorResponse = new NotificationResponse();
-                        errorResponse.setSuccess(false);
-                        deferredResult.setErrorResult(errorResponse);
-                    }
+                final NotificationResponse errorResponse = new NotificationResponse();
+                errorResponse.setSuccess(false);
+                deferredResult.setErrorResult(errorResponse);
+            }
 
-                    deferredResult.setResult(result);
-                });
+            deferredResult.setResult(result);
+        });
 
         return deferredResult;
     }

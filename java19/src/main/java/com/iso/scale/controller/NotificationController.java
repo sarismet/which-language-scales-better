@@ -84,6 +84,29 @@ public class NotificationController {
         return result;
     }
 
+    @PostMapping("/send/itself/v2/")
+    public DeferredResult<NotificationResponse> sendNotificationToItselfV2(
+        @RequestBody final SendNotificationRequest sendNotificationRequest) {
+
+        final DeferredResult<NotificationResponse> result = new DeferredResult<>();
+        final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+
+        CompletableFuture
+            .runAsync(() -> {
+                final NotificationResponse notificationResponse =
+                    this.notificationService.sendSyncNotificationItself();
+
+                result.setResult(notificationResponse);
+            }, executor)
+            .exceptionally(ex -> {
+                result.setErrorResult(ex.getCause());
+
+                return null;
+            });
+
+        return result;
+    }
+
     @PostMapping("/send/golang/v2/")
     public DeferredResult<NotificationResponse> sendNotificationToGolangServerV2(
         @RequestBody final SendNotificationRequest sendNotificationRequest) {
@@ -118,6 +141,27 @@ public class NotificationController {
         this.notificationService.sendAsyncNotification(
             sendNotificationToJava8ServerUrl, sendNotificationRequest
         ).whenComplete((result, ex) -> {
+            if (Objects.nonNull(ex)) {
+                log.error("Error occurred while sending push notification", ex);
+
+                final NotificationResponse errorResponse = new NotificationResponse();
+                errorResponse.setSuccess(false);
+                deferredResult.setErrorResult(errorResponse);
+            }
+
+            deferredResult.setResult(result);
+        });
+
+        return deferredResult;
+    }
+
+    @PostMapping("/send/itself/v3/")
+    public DeferredResult<NotificationResponse> sendNotificationToItselfV3(
+        @RequestBody final SendNotificationRequest sendNotificationRequest) {
+
+        final DeferredResult<NotificationResponse> deferredResult = new DeferredResult<>();
+
+        this.notificationService.sendAsyncNotificationItself().whenComplete((result, ex) -> {
             if (Objects.nonNull(ex)) {
                 log.error("Error occurred while sending push notification", ex);
 

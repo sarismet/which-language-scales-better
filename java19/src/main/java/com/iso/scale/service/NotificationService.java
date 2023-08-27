@@ -37,24 +37,39 @@ public class NotificationService {
         );
     }
 
+    public NotificationResponse sendSyncNotificationItself() {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+
+            log.error("Error occurred while sleeping in thread");
+        }
+
+        final NotificationResponse notificationResponse = new NotificationResponse();
+        notificationResponse.setSuccess(true);
+
+        return notificationResponse;
+    }
+
     public CompletableFuture<NotificationResponse> sendAsyncNotificationItself() {
         final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
         return CompletableFuture.supplyAsync(
-                () -> {
-                    try {
-                        Thread.sleep(sleepTime);
-                    } catch (final InterruptedException ex) {
-                        Thread.currentThread().interrupt();
+            () -> {
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (final InterruptedException ex) {
+                    Thread.currentThread().interrupt();
 
-                        log.error("Error occurred while sleeping in thread");
-                    }
+                    log.error("Error occurred while sleeping in thread");
+                }
 
-                    final NotificationResponse notificationResponse = new NotificationResponse();
-                    notificationResponse.setSuccess(true);
+                final NotificationResponse notificationResponse = new NotificationResponse();
+                notificationResponse.setSuccess(true);
 
-                    return notificationResponse;
-                }, executor);
+                return notificationResponse;
+            }, executor);
     }
 
     public NotificationResponse sendSyncNotification(final String serverUrl,

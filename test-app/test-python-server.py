@@ -6,7 +6,8 @@ from utils import send_notification_to_server
 HOST = "http://localhost"
 PORT = "7003"
 
-URL_TO_JAVA8_SERVER = HOST + ":" + PORT + "/send/"
+URL_TO_ITSELF = HOST + ":" + PORT + "/send/itself/"
+URL_TO_JAVA8_SERVER = HOST + ":" + PORT + "/send/java/"
 URL_TO_GOLANG_SERVER = HOST + ":" + PORT + "/send/golang/"
 
 

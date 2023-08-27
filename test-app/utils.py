@@ -1,9 +1,8 @@
-import requests
 import concurrent.futures
-import time
 import json
+import time
 
-errors = list()
+import requests
 
 
 def log_error(server_url: str, notification_count: int) -> None:
@@ -12,11 +11,9 @@ def log_error(server_url: str, notification_count: int) -> None:
         notification_count,
     )
 
-    errors.append(notification_count)
-
 
 def send_notification_to_related_server(
-    server_url: str, notification_count: int
+        server_url: str, notification_count: int
 ) -> bool:
     try:
         if notification_count % 100 == 0:
@@ -29,10 +26,14 @@ def send_notification_to_related_server(
         )
         if response.status_code == 200:
             json_payload = json.loads(response.text)
-            if json_payload["success"] != True:
+            if not json_payload["success"]:
                 log_error(server_url, notification_count)
+
+                return False
         elif response.status_code != 200:
             log_error(server_url, notification_count)
+
+            return False
     except Exception as ex:
         print(
             "Error occurred for server url : {} at notification count: ".format(
@@ -42,13 +43,12 @@ def send_notification_to_related_server(
             ex,
         )
 
-        errors.append(notification_count)
+        return False
 
 
 def send_notification_to_server(
-    server_name: str, server_url: str, total_notification_count: int
+        server_name: str, server_url: str, total_notification_count: int
 ) -> None:
-
     print(
         "Sending {} notification to server: {} with url: {}".format(
             server_name, server_url, total_notification_count
@@ -57,12 +57,15 @@ def send_notification_to_server(
 
     start_process = time.time()
 
+    futures = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
         start_submit = time.time()
         for notification_count in range(total_notification_count):
-            executor.submit(
+            future = executor.submit(
                 send_notification_to_related_server, server_url, notification_count
             )
+
+            futures.append(future)
         end_submit = time.time()
 
         print(
@@ -73,12 +76,13 @@ def send_notification_to_server(
 
     end_process = time.time()
 
-    global errors
+    error_count = 0
+    for future in futures:
+        if not future.result():
+            error_count = error_count + 1
 
     print(
-        "Total execution time for {} server with endpoint {} is : {}. Error count: {}\n\n".format(
-            server_name, server_url, (end_process - start_process), len(errors)
+        "Total execution time for {} server with endpoint {} is : {}. Error count is : {}\n\n".format(
+            server_name, server_url, (end_process - start_process), len(error_count)
         )
     )
-
-    errors = list()
