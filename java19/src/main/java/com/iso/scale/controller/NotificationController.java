@@ -1,5 +1,10 @@
 package com.iso.scale.controller;
 
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import com.iso.scale.model.NotificationResponse;
 import com.iso.scale.model.SendNotificationRequest;
 import com.iso.scale.service.NotificationService;
@@ -9,11 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
-
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Slf4j
 @RestController
@@ -31,77 +31,87 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-    @PostMapping("/send/")
+    @PostMapping("/send/java/")
     public NotificationResponse sendNotificationToJava8Server(
-            @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         return this.notificationService
-                .sendAsyncNotification(sendNotificationToJava8ServerUrl, sendNotificationRequest)
-                .join();
+            .sendAsyncNotification(sendNotificationToJava8ServerUrl, sendNotificationRequest)
+            .join();
+    }
+
+    @PostMapping("/send/itself/")
+    public NotificationResponse sendNotificationItself(
+        @RequestBody final SendNotificationRequest sendNotificationRequest) {
+
+        return this.notificationService
+            .sendAsyncNotificationItself()
+            .join();
     }
 
     @PostMapping("/send/golang/")
     public NotificationResponse sendNotificationToGolangServer(
-            @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         return this.notificationService
-                .sendAsyncNotification(getSendNotificationToGolangServerUrl, sendNotificationRequest)
-                .join();
+            .sendAsyncNotification(getSendNotificationToGolangServerUrl, sendNotificationRequest)
+            .join();
     }
 
-    @PostMapping("/send/v2/")
+    @PostMapping("/send/java/v2/")
     public DeferredResult<NotificationResponse> sendNotificationToJava8ServerV2(
-            @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         final DeferredResult<NotificationResponse> result = new DeferredResult<>();
         final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
         CompletableFuture
-                .runAsync(() -> {
-                    final NotificationResponse notificationResponse =
-                            this.notificationService.sendSyncNotification(sendNotificationToJava8ServerUrl,
-                                    sendNotificationRequest
-                            );
+            .runAsync(() -> {
+                final NotificationResponse notificationResponse =
+                    this.notificationService.sendSyncNotification(
+                        sendNotificationToJava8ServerUrl,
+                        sendNotificationRequest
+                    );
 
-                    result.setResult(notificationResponse);
-                }, executor)
-                .exceptionally(ex -> {
-                    result.setErrorResult(ex.getCause());
+                result.setResult(notificationResponse);
+            }, executor)
+            .exceptionally(ex -> {
+                result.setErrorResult(ex.getCause());
 
-                    return null;
-                });
+                return null;
+            });
 
         return result;
     }
 
     @PostMapping("/send/golang/v2/")
     public DeferredResult<NotificationResponse> sendNotificationToGolangServerV2(
-            @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         final DeferredResult<NotificationResponse> result = new DeferredResult<>();
         final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
         CompletableFuture
-                .runAsync(() -> {
-                    final NotificationResponse notificationResponse =
-                            this.notificationService.sendSyncNotification(
-                                getSendNotificationToGolangServerUrl, sendNotificationRequest
-                            );
+            .runAsync(() -> {
+                final NotificationResponse notificationResponse =
+                    this.notificationService.sendSyncNotification(
+                        getSendNotificationToGolangServerUrl, sendNotificationRequest
+                    );
 
-                    result.setResult(notificationResponse);
-                }, executor)
-                .exceptionally(ex -> {
-                    result.setErrorResult(ex.getCause());
+                result.setResult(notificationResponse);
+            }, executor)
+            .exceptionally(ex -> {
+                result.setErrorResult(ex.getCause());
 
-                    return null;
-                });
+                return null;
+            });
 
         return result;
     }
 
-    @PostMapping("/send/v3/")
+    @PostMapping("/send/java/v3/")
     public DeferredResult<NotificationResponse> sendNotificationToJava8ServerV3(
-            @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         final DeferredResult<NotificationResponse> deferredResult = new DeferredResult<>();
 
@@ -124,7 +134,7 @@ public class NotificationController {
 
     @PostMapping("/send/golang/v3/")
     public DeferredResult<NotificationResponse> sendNotificationToGolangServerV3(
-            @RequestBody final SendNotificationRequest sendNotificationRequest) {
+        @RequestBody final SendNotificationRequest sendNotificationRequest) {
 
         final DeferredResult<NotificationResponse> deferredResult = new DeferredResult<>();
 

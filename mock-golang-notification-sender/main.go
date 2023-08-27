@@ -47,8 +47,6 @@ func send_notification(c echo.Context) error {
 
 	result := <-notificaiton_channel
 
-	print("Result is ", result)
-
 	return c.JSON(http.StatusOK, &Result{
 		Success: result,
 	})

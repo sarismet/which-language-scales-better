@@ -30,28 +30,39 @@ public class NotificationService {
     }
 
     public CompletableFuture<NotificationResponse> sendAsyncNotification(
-        final String serverUrl, final SendNotificationRequest sendNotificationRequest) {
+            final String serverUrl, final SendNotificationRequest sendNotificationRequest) {
 
         return CompletableFuture.supplyAsync(
-            () -> sendSyncNotification(serverUrl, sendNotificationRequest), taskExecutor
-        );
+                () -> sendSyncNotification(serverUrl, sendNotificationRequest), taskExecutor);
+    }
+
+    public CompletableFuture<NotificationResponse> sendAsyncNotificationItself() {
+
+        return CompletableFuture.supplyAsync(
+                () -> {
+                    try {
+                        Thread.sleep(sleepTime);
+                    } catch (final InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+
+                        log.error("Error occurred while sleeping in thread");
+                    }
+
+                    final NotificationResponse notificationResponse = new NotificationResponse();
+                    notificationResponse.setSuccess(true);
+
+                    return notificationResponse;
+                }, taskExecutor);
     }
 
     public NotificationResponse sendSyncNotification(final String serverUrl,
-        final SendNotificationRequest sendNotificationRequest) {
-        try {
-            Thread.sleep(sleepTime);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-
-            log.error("Error occurred while sleeping in thread");
-        }
+            final SendNotificationRequest sendNotificationRequest) {
 
         log.trace("Sending push to device with id: {}", sendNotificationRequest.getDeviceId());
 
         final HttpEntity<SendNotificationRequest> request = new HttpEntity<>(sendNotificationRequest);
-        final ResponseEntity<NotificationResponse> response =
-            restTemplate.postForEntity(serverUrl, request, NotificationResponse.class);
+        final ResponseEntity<NotificationResponse> response = restTemplate.postForEntity(serverUrl, request,
+                NotificationResponse.class);
 
         final NotificationResponse notificationResponse = response.getBody();
 

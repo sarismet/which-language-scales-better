@@ -23,6 +23,7 @@ tasks.withType(JavaExec).configureEach {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+	implementation 'org.springframework.boot:spring-boot-starter-tomcat'
 
 	compileOnly 'org.projectlombok:lombok:1.18.24'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'

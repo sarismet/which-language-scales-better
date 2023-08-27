@@ -42,9 +42,16 @@ func main() {
 
 	echo_server := echo.New()
 
-	echo_server.POST("/send/", send_notification_to_java)
+	echo_server.POST("/send/itself/", send_notification_itself)
+	echo_server.POST("/send/java/", send_notification_to_java)
 	echo_server.POST("/send/golang/", send_notification_to_golang)
 	echo_server.Start(":7002")
+}
+
+func send_notification_itself(c echo.Context) error {
+	time.Sleep(time.Duration(sleep_time) * time.Millisecond)
+
+	return c.JSON(http.StatusOK, Result{Success: true})
 }
 
 func send_notification_to_java(c echo.Context) error {
@@ -93,8 +100,6 @@ func send_notification(json_data []byte, send_notification_url string) <-chan Re
 
 	go func() {
 		defer close(notificaiton_channel)
-
-		time.Sleep(time.Duration(sleep_time) * time.Millisecond)
 
 		response, err := http.Post(send_notification_url, "application/json", bytes.NewBuffer(json_data))
 		if err != nil {

@@ -6,8 +6,12 @@ import os
 
 app = FastAPI()
 
-MOCK_JAVA8_NOTIFICATION_SERVER_URL = os.getenv("notification.sender-server.java8.url", "http://localhost:7004/send/")
-MOCK_GOLANG_NOTIFICATION_SERVER_URL = os.getenv("notification.sender-server.golang.url", "http://localhost:7005/send/")
+MOCK_JAVA8_NOTIFICATION_SERVER_URL = os.getenv(
+    "notification.sender-server.java8.url", "http://localhost:7004/send/"
+)
+MOCK_GOLANG_NOTIFICATION_SERVER_URL = os.getenv(
+    "notification.sender-server.golang.url", "http://localhost:7005/send/"
+)
 
 
 SLEEP_TIME = int(os.getenv("server.sleepTime", 200)) / 1000
@@ -22,7 +26,6 @@ class NotificationSendResponseModel(BaseModel):
 
 
 async def send_notification(device_id: str, send_notification_url: str) -> dict:
-    await asyncio.sleep(SLEEP_TIME)
     payload = {"deviceId": device_id}
 
     response = requests.post(send_notification_url, json=payload)
@@ -33,7 +36,14 @@ async def send_notification(device_id: str, send_notification_url: str) -> dict:
     return {"success": False}
 
 
-@app.post("/send/", response_model=NotificationSendResponseModel)
+@app.post("/send/itself/", response_model=NotificationSendResponseModel)
+async def read_results():
+    asyncio.create_task(await asyncio.sleep(SLEEP_TIME))
+
+    return {"success": True}
+
+
+@app.post("/send/java/", response_model=NotificationSendResponseModel)
 async def read_results(notification_send_request_model: NotificationSendRequestModel):
     send_notification_task = asyncio.create_task(
         send_notification(

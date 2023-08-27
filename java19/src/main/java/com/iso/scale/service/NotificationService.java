@@ -37,15 +37,28 @@ public class NotificationService {
         );
     }
 
+    public CompletableFuture<NotificationResponse> sendAsyncNotificationItself() {
+        final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+
+        return CompletableFuture.supplyAsync(
+                () -> {
+                    try {
+                        Thread.sleep(sleepTime);
+                    } catch (final InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+
+                        log.error("Error occurred while sleeping in thread");
+                    }
+
+                    final NotificationResponse notificationResponse = new NotificationResponse();
+                    notificationResponse.setSuccess(true);
+
+                    return notificationResponse;
+                }, executor);
+    }
+
     public NotificationResponse sendSyncNotification(final String serverUrl,
         final SendNotificationRequest sendNotificationRequest) {
-        try {
-            Thread.sleep(sleepTime);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-
-            log.error("Error occurred while sleeping in thread");
-        }
 
         log.trace("Sending push to device with id: {}", sendNotificationRequest.getDeviceId());
 
