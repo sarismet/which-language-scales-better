@@ -78,6 +78,7 @@ services:
       - mock-java8-notification-sender
       - mock-golang-notification-sender
     environment:
+      server.port: 7005
       server.sleepTime: 950
       notification.sender-server.java8.url: "http://mock-java8-notification-sender:7100/send/"
       notification.sender-server.golang.url: "http://mock-golang-notification-sender:7101/send/"
