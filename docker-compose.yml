@@ -6,8 +6,9 @@ services:
       - 7000:7000
     depends_on:
       - mock-java8-notification-sender
+      - mock-golang-notification-sender
     environment:
-      server.sleepTime: 200
+      server.sleepTime: 950
       notification.sender-server.java8.url: "http://mock-java8-notification-sender:7100/send/"
       notification.sender-server.golang.url: "http://mock-golang-notification-sender:7101/send/"
     networks:
@@ -19,8 +20,9 @@ services:
       - 7001:7001
     depends_on:
       - mock-java8-notification-sender
+      - mock-golang-notification-sender
     environment:
-      server.sleepTime: 200
+      server.sleepTime: 950
       notification.sender-server.java8.url: "http://mock-java8-notification-sender:7100/send/"
       notification.sender-server.golang.url: "http://mock-golang-notification-sender:7101/send/"
     networks:
@@ -34,7 +36,7 @@ services:
       - mock-java8-notification-sender
       - mock-golang-notification-sender
     environment:
-      server.sleepTime: 200
+      server.sleepTime: 950
       notification.sender-server.java8.url: "http://mock-java8-notification-sender:7100/send/"
       notification.sender-server.golang.url: "http://mock-golang-notification-sender:7101/send/"
     networks:
@@ -48,7 +50,7 @@ services:
       - mock-java8-notification-sender
       - mock-golang-notification-sender
     environment:
-      server.sleepTime: 200
+      server.sleepTime: 950
       notification.sender-server.java8.url: "http://mock-java8-notification-sender:7100/send/"
       notification.sender-server.golang.url: "http://mock-golang-notification-sender:7101/send/"
     networks:
@@ -62,9 +64,24 @@ services:
       - mock-java8-notification-sender
       - mock-golang-notification-sender
     environment:
-      server.sleepTime: 200
+      server.sleepTime: 950
       notification.sender-server.java8.url: "http://mock-java8-notification-sender:7100/send/"
       notification.sender-server.golang.url: "http://mock-golang-notification-sender:7101/send/"
+    networks:
+      - notification_bridge
+
+  java19-notification-server-with-virtual-tomcat:
+    build: ./java19
+    ports:
+      - 7005:7005
+    depends_on:
+      - mock-java8-notification-sender
+      - mock-golang-notification-sender
+    environment:
+      server.sleepTime: 950
+      notification.sender-server.java8.url: "http://mock-java8-notification-sender:7100/send/"
+      notification.sender-server.golang.url: "http://mock-golang-notification-sender:7101/send/"
+      spring.profiles.active: "virtual"
     networks:
       - notification_bridge
 
