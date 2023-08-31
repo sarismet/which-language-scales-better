@@ -9,6 +9,6 @@ RUN mkdir /app
 
 COPY --from=gradleimage /home/gradle/src/build/libs/*-SNAPSHOT.jar /app/scale-java19.jar
 
-EXPOSE 7001
+EXPOSE 7001-7100
 
 ENTRYPOINT ["java","--enable-preview","-jar","/app/scale-java19.jar"]
